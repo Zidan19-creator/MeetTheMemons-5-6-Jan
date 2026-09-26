@@ -1,0 +1,59 @@
+name: Deploy 4-event wedding site
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout four-event site snapshot
+        run: |
+          git clone --depth 1 --branch four-events-site-staging https://github.com/Zidan19-creator/MeetTheMemons-In-Udaipur.git site
+          rm -rf site/.git
+
+      - name: Verify required HD assets
+        run: |
+          test -s site/assets/cover-final-bismillah-hq.webp
+          test -s site/assets/monogram-story-new-q92.webp
+          test -s site/assets/haldi-hq.webp
+          test -s site/assets/bollywood-night-final-v2.png
+          test -s site/assets/carnival-hq.webp
+          test -s site/assets/reception-hq.webp
+          test -s site/assets/udaipur-approved.png
+          test -s site/assets/haldi-kabira-0-60.mp3
+          test -s site/assets/bollywood-badtameez-dil.mp3
+          test -s site/assets/carnival-balam-pichkari.mp3
+          test -s site/assets/reception-din-shagna-da-from-5.mp3
+          ! grep -qi "sufi" site/index.html
+          ! grep -qi "sufi" site/script.js
+          grep -q "Four moods" site/index.html
+          grep -q "05 — 06 January 2027" site/index.html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
