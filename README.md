@@ -2,4 +2,4 @@
 
 Four-event Udaipur wedding website.
 
-Deployment source: four-events-site-staging @ 095c12e54ca0ebfb909177b8e2cd578a23e915c4
+Deployment source: four-events-site-staging @ 57395f2dcf0e2cfc2b99ffbfc35bed24c054c069
